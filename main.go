@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/gorilla/mux"
+	"github.com/rs/cors"
 	"log"
 	"net/http"
 	"streamer/webapp/api/auth"
@@ -20,8 +21,10 @@ func main() {
 
 	auth.SetupRouter(r)
 
+	handler := cors.Default().Handler(r)
+
 	log.Println("Started Server")
-	err := http.ListenAndServe("localhost:8080", r)
+	err := http.ListenAndServe("localhost:8080", handler)
 	if err != nil {
 		log.Fatal("Can not start server")
 	}

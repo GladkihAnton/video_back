@@ -2,6 +2,7 @@ package auth
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"streamer/webapp/auth"
 	"streamer/webapp/db"
@@ -18,6 +19,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 
 	errBody := json.NewDecoder(r.Body).Decode(&body)
 	if errBody != nil {
+		log.Printf("%s", errBody.Error())
 		http.Error(w, errBody.Error(), http.StatusBadRequest)
 		return
 	}
@@ -30,12 +32,14 @@ func login(w http.ResponseWriter, r *http.Request) {
 		Select()
 
 	if selectErr != nil {
+		log.Printf("%s", selectErr.Error())
 		http.Error(w, selectErr.Error(), http.StatusUnauthorized)
 		return
 	}
 
 	token, errGenerateToken := auth.GenerateToken(user)
 	if errGenerateToken != nil {
+		log.Printf("%s", errGenerateToken.Error())
 		http.Error(w, errGenerateToken.Error(), http.StatusUnauthorized)
 		return
 	}
